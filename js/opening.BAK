@@ -1,0 +1,117 @@
+﻿var gSoundManager;
+var gBgmFlg = 0;
+var gScale;
+var gDegTest;
+var gAlphaTest;
+var gScaleFlg;
+var gDegFlg;
+var gBackGround;
+var gDispCnt = 0;
+var gGameMode = 0;
+
+var gStartMove = 0;
+
+
+//////////////////////////////
+// オープニング画面
+function opening() {
+    //////////////////////////////
+    // 初期化処理
+    if (gFirstOpnFlg == 1) {
+        gImageLogo = new image("./images/opening1.png");
+        gImageStart = new image("./images/gamestart.png");
+        gImageRule = new image("./images/rule.png");
+        gImageTitle = new image("./images/Title.png");
+        gDispCnt = 0;
+        gScale = 1;
+        gDegTest = 0.0;
+        gAlphaTest = 0.0;
+        gScaleFlg = 0;
+        gDegFlg = 0;
+        gSoundManager = new SoundManager("./wav/kansha.mp3");
+        gBgmFlg = 0;
+        gStartMove = 0;
+        gFirstOpnFlg = 0;
+    }
+
+    gImageRule.draw(200, 650, 0, 0, 250, 750);
+
+    gImageTitle.draw(0, 0, 0, 0, 1366, 834);
+    
+//    gImageStart.setAlpha(gAlphaTest);
+//    gImageStart.drawTransForm(486, 560, 0, 0, 1571, 735, gDegTest, 1.0);
+    gImageStart.drawTransForm(486, 560, 0, 0, 395, 101, gDegTest, 1.0);
+    
+    //    gImageLogo.drawTransForm((width/2 - 140), (height/2 - 200), 0, 0, 280, 400, 0, gScale);
+    gImageLogo.drawTransForm((400), (240), 0, 0, 568, 234, 0, gScale);
+    if (gScaleFlg == 0) {
+        gScale += 0.005;
+        if (gScale >= 1) {
+            gScaleFlg = 1;
+        }
+    } else {
+        gScale -= 0.01;
+        if (gScale <= 0.5) {
+            gScaleFlg = 0;
+        }
+    }
+    //////////////////////////////
+    // キー入力処理
+    if (isClick()) {
+        var clickX = getClickPos()[0];
+        var clickY = getClickPos()[1]; 
+        
+        if (200 < clickX && clickX < 300) {
+            if (725 < clickY && clickY < 775){
+                gGameMode = ST_RULE;
+            }
+        }
+	    if (500 < clickX && clickX < 895) {
+	        if (600 < clickY && clickY < 701){
+//	            gAlphaTest += 1;
+                gStartMove = 1;
+            }
+	    }
+	}
+
+	if( gStartMove > 0 ){
+		gStartMove ++;
+		if( gStartMove % 50 == 0 ){
+			gDegTest = 10;
+		}else{
+			gDegTest = 0;
+		}
+
+		if( gStartMove > 300 ){
+			gStartMove = 0;
+	        gGameMode = ST_TOP;
+		}
+	}
+
+//    if (gAlphaTest > 300.0) {
+//        gAlphaTest = 0.0;
+//        gGameMode = ST_TOP;
+//    }    
+ //   if (gDegFlg == 0) {
+ //       gDegTest += 0.5;
+ //       if (gDegTest >= 30.0) {
+ //           gDegFlg = 1;
+ //       }
+ //   } else {
+ //       gDegTest -= 0.5;
+ //       if (gDegTest <= -30.0) {
+ //           gDegFlg = 0;
+ //       } 
+ //   }
+    //////////////////////////////
+    // 終了処理(次ステータスへ遷移)
+    if (gGameMode != 0) {
+        delete gImageLogo;
+        delete gImageStart;
+        delete gImageRule;
+        gFirstOpnFlg = 1;
+        gState = gGameMode;
+
+    } 
+}
+
